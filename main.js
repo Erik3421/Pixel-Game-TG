@@ -23,7 +23,7 @@ loadSprite("coin", "assets/coin.png", {
 
 const SPEED = 200;
 const JUMP_FORCE = 360;
-const COIN_FALL_SPEED = 30;
+const COIN_FALL_SPEED = 40;
 
 setGravity(640);
 
