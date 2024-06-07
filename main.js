@@ -145,27 +145,22 @@ player.onUpdate(() => {
 });
 
 // Обработка касаний для мобильного управления
+let isTouchingLeft = false;
+let isTouchingRight = false;
+
 onTouchStart((pos, t) => {
     if (pos.x < width() / 2) {
-        player.move(-SPEED, 0);
-        player.flipX = true;
-        if (player.isGrounded() && player.curAnim() !== "run") {
-            player.play("run");
-        }
+        isTouchingLeft = true;
+        isTouchingRight = false;
     } else {
-        player.move(SPEED, 0);
-        player.flipX = false;
-        if (player.isGrounded() && player.curAnim() !== "run") {
-            player.play("run");
-        }
+        isTouchingRight = true;
+        isTouchingLeft = false;
     }
 });
 
 onTouchEnd((pos, t) => {
-    player.stop();
-    if (player.isGrounded()) {
-        player.play("idle");
-    }
+    isTouchingLeft = false;
+    isTouchingRight = false;
 });
 
 onTouchMove((pos, t) => {
@@ -175,3 +170,19 @@ onTouchMove((pos, t) => {
     }
 });
 
+player.onUpdate(() => {
+    if (isTouchingLeft) {
+        player.move(-SPEED, 0);
+        player.flipX = true;
+        if (player.isGrounded() && player.curAnim() !== "run") {
+            player.play("run");
+        }
+    }
+    if (isTouchingRight) {
+        player.move(SPEED, 0);
+        player.flipX = false;
+        if (player.isGrounded() && player.curAnim() !== "run") {
+            player.play("run");
+        }
+    }
+});
