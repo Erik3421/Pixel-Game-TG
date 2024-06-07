@@ -1,7 +1,7 @@
 kaboom({
     global: true,
     fullscreen: true,
-    scale: 1.5, // Уменьшение масштаба
+    scale: 1.5,
     debug: true,
     clearColor: [0, 0, 0, 1],
 });
@@ -21,9 +21,9 @@ loadSprite("coin", "assets/coin.png", {
     anims: { spin: { from: 0, to: 6, speed: 10, loop: true } },
 });
 
-const SPEED = 200; // Скорость для масштабирования
-const JUMP_FORCE = 360; // Сила прыжка для масштабирования
-const COIN_FALL_SPEED = 30; // Скорость падения монеток
+const SPEED = 200;
+const JUMP_FORCE = 360;
+const COIN_FALL_SPEED = 30;
 
 setGravity(640);
 
@@ -33,13 +33,13 @@ const player = add([
     anchor("center"),
     area(),
     body(),
-    scale(1.5), // Масштаб персонажа
+    scale(1.5),
 ]);
 
 player.play("idle");
 
 const ground = add([
-    rect(width(), 36), // Высота платформы
+    rect(width(), 36),
     area(),
     outline(1),
     pos(0, height() - 36),
@@ -87,9 +87,8 @@ onKeyDown("right", () => {
 
 let score = 0;
 
-// Текст для отображения очков
 const scoreLabel = add([
-    text(`Score: ${score}`, { size: 24, font: "RetroGaming" }), // Размер текста
+    text(`Score: ${score}`, { size: 24, font: "RetroGaming" }),
     pos(24, 24),
 ]);
 
@@ -97,14 +96,12 @@ function updateScore(points) {
     score += points;
     scoreLabel.text = `Score: ${score}`;
 
-    // Текст "+100" на месте пойманной монеты
     const plus100 = add([
-        text("+100", { size: 18, font: "RetroGaming" }), // Размер текста
+        text("+100", { size: 18, font: "RetroGaming" }),
         pos(player.pos),
         color(255, 232, 94),
     ]);
 
-    // Анимация исчезновения текста "+100"
     plus100.onUpdate(() => {
         plus100.move(0, -20);
         plus100.opacity -= 0.05;
@@ -119,7 +116,7 @@ function spawnCoin() {
         sprite("coin"),
         pos(rand(0, width()), 0),
         area(),
-        scale(0.75), // Масштаб монеток
+        scale(0.75),
         "coin",
     ]);
 
@@ -142,14 +139,13 @@ player.onCollide("coin", (coin) => {
     updateScore(100);
 });
 
-// Ограничение движения игрока в пределах экрана
 player.onUpdate(() => {
     if (player.pos.x < 0) player.pos.x = 0;
     if (player.pos.x > width()) player.pos.x = width();
 });
 
 // Обработка касаний для мобильного управления
-touchStart((id, pos) => {
+onTouchStart((pos, t) => {
     if (pos.x < width() / 2) {
         player.move(-SPEED, 0);
         player.flipX = true;
@@ -165,15 +161,17 @@ touchStart((id, pos) => {
     }
 });
 
-touchEnd(() => {
+onTouchEnd((pos, t) => {
+    player.stop();
     if (player.isGrounded()) {
         player.play("idle");
     }
 });
 
-touchMove((id, pos) => {
+onTouchMove((pos, t) => {
     if (pos.y < height() / 2 && player.isGrounded()) {
         player.jump(JUMP_FORCE);
         player.play("jump");
     }
 });
+
