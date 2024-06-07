@@ -1,7 +1,7 @@
 kaboom({
     global: true,
     fullscreen: true,
-    scale: 2, // Увеличение масштаба
+    scale: 1.5, // Уменьшение масштаба
     debug: true,
     clearColor: [0, 0, 0, 1],
 });
@@ -21,30 +21,28 @@ loadSprite("coin", "assets/coin.png", {
     anims: { spin: { from: 0, to: 6, speed: 10, loop: true } },
 });
 
-const SPEED = 240; // Увеличена скорость для масштабирования
-const JUMP_FORCE = 480; // Увеличена сила прыжка для масштабирования
-const COIN_FALL_SPEED = 20; // Уменьшена скорость падения монеток
+const SPEED = 200; // Скорость для масштабирования
+const JUMP_FORCE = 360; // Сила прыжка для масштабирования
+const COIN_FALL_SPEED = 30; // Скорость падения монеток
 
 setGravity(640);
 
-// Добавление персонажа
 const player = add([
     sprite("bean"),
     pos(center()),
     anchor("center"),
     area(),
     body(),
-    scale(2), // Увеличение масштаба персонажа
+    scale(1.5), // Масштаб персонажа
 ]);
 
 player.play("idle");
 
-// Добавление платформы
 const ground = add([
-    rect(width(), 48), // Увеличение высоты платформы
+    rect(width(), 36), // Высота платформы
     area(),
     outline(1),
-    pos(0, height() - 48),
+    pos(0, height() - 36),
     body({ isStatic: true }),
 ]);
 
@@ -89,9 +87,9 @@ onKeyDown("right", () => {
 
 let score = 0;
 
-// Добавление текста для отображения очков
+// Текст для отображения очков
 const scoreLabel = add([
-    text(`Score: ${score}`, { size: 32, font: "RetroGaming" }), // Увеличение размера текста
+    text(`Score: ${score}`, { size: 24, font: "RetroGaming" }), // Размер текста
     pos(24, 24),
 ]);
 
@@ -99,9 +97,9 @@ function updateScore(points) {
     score += points;
     scoreLabel.text = `Score: ${score}`;
 
-    // Добавление текста "+100" на месте пойманной монеты
+    // Текст "+100" на месте пойманной монеты
     const plus100 = add([
-        text("+100", { size: 24, font: "RetroGaming" }), // Увеличение размера текста
+        text("+100", { size: 18, font: "RetroGaming" }), // Размер текста
         pos(player.pos),
         color(255, 232, 94),
     ]);
@@ -116,13 +114,12 @@ function updateScore(points) {
     });
 }
 
-// Функция для создания монеток
 function spawnCoin() {
     const coin = add([
         sprite("coin"),
         pos(rand(0, width()), 0),
         area(),
-        scale(1), // Увеличение масштаба монеток
+        scale(0.75), // Масштаб монеток
         "coin",
     ]);
 
@@ -140,7 +137,6 @@ function spawnCoin() {
 
 spawnCoin();
 
-// Проверка на столкновение с монеткой
 player.onCollide("coin", (coin) => {
     destroy(coin);
     updateScore(100);
@@ -181,4 +177,3 @@ touchMove((id, pos) => {
         player.play("jump");
     }
 });
-
