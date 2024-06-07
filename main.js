@@ -47,7 +47,7 @@ const ground = add([
 ]);
 
 player.onGround(() => {
-    if (!isKeyDown("left") && !isKeyDown("right")) {
+    if (!isKeyDown("left") && !isKeyDown("right") && !isTouchingLeft && !isTouchingRight) {
         player.play("idle");
     } else {
         player.play("run");
@@ -79,7 +79,7 @@ onKeyDown("right", () => {
 
 ["left", "right"].forEach((key) => {
     onKeyRelease(key, () => {
-        if (player.isGrounded() && !isKeyDown("left") && !isKeyDown("right")) {
+        if (player.isGrounded() && !isKeyDown("left") && !isKeyDown("right") && !isTouchingLeft && !isTouchingRight) {
             player.play("idle");
         }
     });
@@ -161,6 +161,9 @@ onTouchStart((pos, t) => {
 onTouchEnd((pos, t) => {
     isTouchingLeft = false;
     isTouchingRight = false;
+    if (player.isGrounded() && !isKeyDown("left") && !isKeyDown("right")) {
+        player.play("idle");
+    }
 });
 
 onTouchMove((pos, t) => {
@@ -184,5 +187,8 @@ player.onUpdate(() => {
         if (player.isGrounded() && player.curAnim() !== "run") {
             player.play("run");
         }
+    }
+    if (!isTouchingLeft && !isTouchingRight && player.isGrounded() && !isKeyDown("left") && !isKeyDown("right")) {
+        player.play("idle");
     }
 });
