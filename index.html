@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/kaboom/dist/kaboom.js"></script>
     <script defer src="main.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (window.Telegram.WebApp) {
+                window.Telegram.WebApp.expand();
+            }
+        });
+    </script>
 </head>
 <body>
     <div id="game"></div>
