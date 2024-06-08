@@ -21,7 +21,7 @@ loadSprite("coin", "assets/coin.png", {
     anims: { spin: { from: 0, to: 6, speed: 10, loop: true } },
 });
 
-const SPEED = 200;
+const SPEED = 100;
 const JUMP_FORCE = 360;
 const COIN_FALL_SPEED = 40;
 
@@ -46,12 +46,18 @@ const ground = add([
     body({ isStatic: true }),
 ]);
 
-player.onGround(() => {
-    if (!isKeyDown("left") && !isKeyDown("right") && !isTouchingLeft && !isTouchingRight) {
-        player.play("idle");
-    } else {
-        player.play("run");
+function updatePlayerAnimation() {
+    if (player.isGrounded()) {
+        if (isTouchingLeft || isKeyDown("left") || isTouchingRight || isKeyDown("right")) {
+            player.play("run");
+        } else {
+            player.play("idle");
+        }
     }
+}
+
+player.onGround(() => {
+    updatePlayerAnimation();
 });
 
 onKeyPress("space", () => {
@@ -62,6 +68,7 @@ onKeyPress("space", () => {
 });
 
 onKeyDown("left", () => {
+    isTouchingLeft = true;
     player.move(-SPEED, 0);
     player.flipX = true;
     if (player.isGrounded() && player.curAnim() !== "run") {
@@ -70,6 +77,7 @@ onKeyDown("left", () => {
 });
 
 onKeyDown("right", () => {
+    isTouchingRight = true;
     player.move(SPEED, 0);
     player.flipX = false;
     if (player.isGrounded() && player.curAnim() !== "run") {
@@ -79,9 +87,13 @@ onKeyDown("right", () => {
 
 ["left", "right"].forEach((key) => {
     onKeyRelease(key, () => {
-        if (player.isGrounded() && !isKeyDown("left") && !isKeyDown("right") && !isTouchingLeft && !isTouchingRight) {
-            player.play("idle");
+        if (key === "left") {
+            isTouchingLeft = false;
         }
+        if (key === "right") {
+            isTouchingRight = false;
+        }
+        updatePlayerAnimation();
     });
 });
 
@@ -152,18 +164,26 @@ onTouchStart((pos, t) => {
     if (pos.x < width() / 2) {
         isTouchingLeft = true;
         isTouchingRight = false;
+        player.move(-SPEED, 0);
+        player.flipX = true;
+        if (player.isGrounded() && player.curAnim() !== "run") {
+            player.play("run");
+        }
     } else {
         isTouchingRight = true;
         isTouchingLeft = false;
+        player.move(SPEED, 0);
+        player.flipX = false;
+        if (player.isGrounded() && player.curAnim() !== "run") {
+            player.play("run");
+        }
     }
 });
 
 onTouchEnd((pos, t) => {
     isTouchingLeft = false;
     isTouchingRight = false;
-    if (player.isGrounded() && !isKeyDown("left") && !isKeyDown("right")) {
-        player.play("idle");
-    }
+    updatePlayerAnimation();
 });
 
 onTouchMove((pos, t) => {
@@ -187,8 +207,5 @@ player.onUpdate(() => {
         if (player.isGrounded() && player.curAnim() !== "run") {
             player.play("run");
         }
-    }
-    if (!isTouchingLeft && !isTouchingRight && player.isGrounded() && !isKeyDown("left") && !isKeyDown("right")) {
-        player.play("idle");
     }
 });
