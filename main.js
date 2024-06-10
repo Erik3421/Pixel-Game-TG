@@ -21,11 +21,13 @@ loadSprite("coin", "assets/coin.png", {
     anims: { spin: { from: 0, to: 6, speed: 10, loop: true } },
 });
 
+const BACKGROUND_COLOR = Color.fromHex('#101010');
 const SPEED = 100;
 const JUMP_FORCE = 360;
 const COIN_FALL_SPEED = 60;
 
 setGravity(640);
+setBackground(BACKGROUND_COLOR)
 
 const player = add([
     sprite("bean"),
