@@ -11,14 +11,14 @@ loadFont("RetroGaming", "assets/RetroGaming.ttf");
 loadSprite("bean", "assets/bean.png", {
     sliceX: 5,
     anims: {
-        idle: { from: 0, to 1, speed: 5, loop: true },
+        idle: { from: 0, to: 1, speed: 5, loop: true },
         run: { from: 2, to: 3, speed: 10, loop: true },
         jump: 4,
     },
 });
 loadSprite("coin", "assets/coin.png", {
     sliceX: 7,
-    anims: { spin: { from: 0, to 6, speed: 10, loop: true } },
+    anims: { spin: { from: 0, to: 6, speed: 10, loop: true } },
 });
 
 const BACKGROUND_COLOR = Color.fromHex('#101010');
@@ -27,7 +27,7 @@ const JUMP_FORCE = 360;
 const COIN_FALL_SPEED = 60;
 
 setGravity(640);
-setBackground(BACKGROUND_COLOR);
+setBackground(BACKGROUND_COLOR)
 
 const player = add([
     sprite("bean"),
@@ -183,11 +183,8 @@ onTouchStart((pos, t) => {
 });
 
 onTouchEnd((pos, t) => {
-    if (pos.x < width() / 2) {
-        isTouchingLeft = false;
-    } else {
-        isTouchingRight = false;
-    }
+    isTouchingLeft = false;
+    isTouchingRight = false;
     updatePlayerAnimation();
 });
 
