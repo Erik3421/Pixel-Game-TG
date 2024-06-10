@@ -196,8 +196,9 @@ function updatePlayerMovement() {
             player.play("run");
         }
     } else {
-        player.stop();
-        updatePlayerAnimation();
+        if (player.isGrounded() && player.curAnim() !== "idle") {
+            player.play("idle");
+        }
     }
 }
 
@@ -223,7 +224,8 @@ player.onUpdate(() => {
             player.play("run");
         }
     } else {
-        player.stop();
-        updatePlayerAnimation();
+        if (player.isGrounded() && player.curAnim() !== "idle") {
+            player.play("idle");
+        }
     }
 });
