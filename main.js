@@ -166,33 +166,47 @@ onTouchStart((pos, t) => {
     if (pos.x < width() / 2) {
         isTouchingLeft = true;
         isTouchingRight = false;
+    } else {
+        isTouchingRight = true;
+        isTouchingLeft = false;
+    }
+    updatePlayerMovement();
+});
+
+onTouchEnd((pos, t) => {
+    if (pos.x < width() / 2) {
+        isTouchingLeft = false;
+    } else {
+        isTouchingRight = false;
+    }
+    updatePlayerMovement();
+});
+
+function updatePlayerMovement() {
+    if (isTouchingLeft) {
         player.move(-SPEED, 0);
         player.flipX = true;
         if (player.isGrounded() && player.curAnim() !== "run") {
             player.play("run");
         }
-    } else {
-        isTouchingRight = true;
-        isTouchingLeft = false;
+    } else if (isTouchingRight) {
         player.move(SPEED, 0);
         player.flipX = false;
         if (player.isGrounded() && player.curAnim() !== "run") {
             player.play("run");
         }
+    } else {
+        player.stop();
+        updatePlayerAnimation();
     }
-});
-
-onTouchEnd((pos, t) => {
-    isTouchingLeft = false;
-    isTouchingRight = false;
-    updatePlayerAnimation();
-});
+}
 
 onTouchMove((pos, t) => {
     if (pos.y < height() / 2 && player.isGrounded()) {
         player.jump(JUMP_FORCE);
         player.play("jump");
     }
+    updatePlayerMovement();
 });
 
 player.onUpdate(() => {
@@ -202,12 +216,14 @@ player.onUpdate(() => {
         if (player.isGrounded() && player.curAnim() !== "run") {
             player.play("run");
         }
-    }
-    if (isTouchingRight) {
+    } else if (isTouchingRight) {
         player.move(SPEED, 0);
         player.flipX = false;
         if (player.isGrounded() && player.curAnim() !== "run") {
             player.play("run");
         }
+    } else {
+        player.stop();
+        updatePlayerAnimation();
     }
 });
